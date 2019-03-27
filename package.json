@@ -27,6 +27,8 @@
     "mocha": "^6.0.2"
   },
   "dependencies": {
+    "ethereumjs-util": "^6.1.0",
+    "protocol2-js": "^0.4.7",
     "request": "^2.88.0"
   }
 }
