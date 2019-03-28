@@ -1,6 +1,8 @@
 var LoopringRelay = require('./node-loopring-relay2-api');
 var ethUtil = require("ethereumjs-util");
 var pjs = require("protocol2-js");
+const { randomBytes } = require('crypto');
+const secp256k1 = require('secp256k1');
 
 var getAccountRequest = {address: "0xe20cf871f1646d8651ee9dc95aab1d93160b3467", tokens: []};
 getAccountRequest.tokens.push("0x97241525fe425c90ebe5a41127816dcfa5954b06");
@@ -47,10 +49,35 @@ loopringRelay.getAccounts(10, getAccountRequest);
 }*/
 
 var order = {
-	version: 0
+	version: 1,
+	amountS: 15,
+	amountB: 20,
+	feeAmount: 30,
+	validSince: 1553743963,
+	validUntil:1553830363,
+	owner: "0xb94065482ad64d4c2b9252358d746b39e820a582",
+	tokenS: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+	tokenB: "0xef68e7c694f40c8202821edf525de3782458639f",
+	tokenRecipient:"0xb94065482ad64d4c2b9252358d746b39e820a582",
+	feeToken:"0xef68e7c694f40c8202821edf525de3782458639f",
+	walletSplitPercentage:1,
+	tokenSFeePercentage:5,
+	tokenBFeePercentage:40,
+	allOrNone:true
 };
 
 console.log(order);
+
+let privateKey
+do {
+  privateKey = randomBytes(32)
+} while (!secp256k1.privateKeyVerify(privateKey));
+console.log(privateKey);
+const publicKey = ethUtil.bufferToHex(ethUtil.privateToAddress(privateKey));
+const owner = ethUtil.privateToAddress(privateKey);
+console.log(privateKey);
+console.log(publicKey);
+console.log(owner);
 
 orderUtil = new pjs.OrderUtil();
 var orderHash = orderUtil.getOrderHash(order);
