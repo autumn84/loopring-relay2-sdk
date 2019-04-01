@@ -1,6 +1,7 @@
 var LoopringRelay = require('./node-loopring-relay2-api');
 var ethUtil = require("ethereumjs-util");
 var pjs = require("protocol2-js");
+var eip712util = require("./eip712util");
 const { randomBytes } = require('crypto');
 const secp256k1 = require('secp256k1');
 
@@ -70,7 +71,7 @@ console.log(order);
 
 let privateKey
 do {
-  privateKey = randomBytes(32)
+	privateKey = randomBytes(32)
 } while (!secp256k1.privateKeyVerify(privateKey));
 console.log(privateKey);
 const publicKey = ethUtil.bufferToHex(ethUtil.privateToAddress(privateKey));
@@ -82,6 +83,10 @@ console.log(owner);
 orderUtil = new pjs.OrderUtil();
 var orderHash = orderUtil.getOrderHash(order);
 
+var typedOrder = eip712util.toTypedData(order);
+console.log(typedOrder);
+var typedHash = eip712util.typedSignatureHash(typedOrder);
+console.log(typedHash);
 console.log(orderHash);
 
 var sig = new pjs.Bitstream();
