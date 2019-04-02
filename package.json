@@ -33,6 +33,8 @@
     "ethereumjs-util": "^6.1.0",
     "protocol2-js": "^0.4.7",
     "request": "^2.88.0",
-    "secp256k1": "^3.6.2"
+    "secp256k1": "^3.6.2",
+    "web3": "^1.0.0-beta.51",
+    "web3-utils": "^1.0.0-beta.51"
   }
 }

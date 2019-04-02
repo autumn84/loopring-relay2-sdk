@@ -1,7 +1,7 @@
 var LoopringRelay = require('./node-loopring-relay2-api');
 var ethUtil = require("ethereumjs-util");
 var pjs = require("protocol2-js");
-var eip712util = require("./eip712util");
+var eip712Util = require("./eip712-util");
 const { randomBytes } = require('crypto');
 const secp256k1 = require('secp256k1');
 
@@ -10,7 +10,7 @@ getAccountRequest.tokens.push("0x97241525fe425c90ebe5a41127816dcfa5954b06");
 
 var loopringRelay = new LoopringRelay();
 
-loopringRelay.getAccounts(10, getAccountRequest);
+//loopringRelay.getAccounts(10, getAccountRequest);
 
 /*"params": {
     "rawOrder": {
@@ -67,13 +67,25 @@ var order = {
 	allOrNone:true
 };
 
+var cancelRequest = {
+	id:"0x" + "0".repeat(64),
+	owner:"0xb94065482ad64d4c2b9252358d746b39e820a582",
+	marketPair: {
+		baseToken: "0xef68e7c694f40c8202821edf525de3782458639f",
+        quoteToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+	},
+	time: "0x5c4e980e"
+}
+
 console.log(order);
 
 let privateKey
 do {
 	privateKey = randomBytes(32)
 } while (!secp256k1.privateKeyVerify(privateKey));
+
 console.log(privateKey);
+
 const publicKey = ethUtil.bufferToHex(ethUtil.privateToAddress(privateKey));
 const owner = ethUtil.privateToAddress(privateKey);
 console.log(privateKey);
@@ -82,15 +94,23 @@ console.log(owner);
 
 orderUtil = new pjs.OrderUtil();
 var orderHash = orderUtil.getOrderHash(order);
-
-var typedOrder = eip712util.toTypedData(order);
-console.log(typedOrder);
-var typedHash = eip712util.typedSignatureHash(typedOrder);
-console.log(typedHash);
 console.log(orderHash);
+
+var typedOrder = eip712Util.orderToTypedData(order);
+console.log(typedOrder);
+var typedOrderHash = eip712Util.getEIP712Message(typedOrder);
+console.log(typedOrderHash);
+
+var cancelOrderTyped = eip712Util.cancelRequestToTypedData(cancelRequest);
+console.log("cancelOrderTyped");
+console.log(cancelOrderTyped);
+
 
 var sig = new pjs.Bitstream();
 const signature = ethUtil.ecsign(orderHash, privateKey);
+console.log(signature);
+const signature2 = ethUtil.ecsign(typedOrderHash, privateKey);
+console.log(signature2);
 
 sig.addNumber(1 + 32 + 32, 1);
 sig.addNumber(signature.v, 1);
