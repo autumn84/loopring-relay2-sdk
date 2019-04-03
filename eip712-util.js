@@ -106,9 +106,10 @@ function cancelRequestToTypedData(cancelRequest) {
     console.log(cancelRequest.marketPair.baseToken);
     console.log(cancelRequest.marketPair.quoteToken);
 
-    console.log(web3Util.toBN(cancelRequest.marketPair.baseToken));
-    console.log(web3Util.toBN(cancelRequest.marketPair.quoteToken));
-    
+    var bToken = web3Util.toBN(cancelRequest.marketPair.baseToken);
+    var qToken = web3Util.toBN(cancelRequest.marketPair.quoteToken);
+    var marketHash = '0x' + bToken.xor(qToken).toString(16);
+
     const typedData = {
         types: {
             EIP712Domain: [
@@ -130,7 +131,7 @@ function cancelRequestToTypedData(cancelRequest) {
         message: {
             id: cancelRequest.id,
             owner: cancelRequest.owner,
-            market: (web3Util.toBN(cancelRequest.marketPair.baseToken))^(web3Util.toBN(cancelRequest.marketPair.quoteToken)),
+            market: marketHash,
             time: toBN(cancelRequest.time),
         },
     };
@@ -140,18 +141,14 @@ function cancelRequestToTypedData(cancelRequest) {
 exports.cancelRequestToTypedData = cancelRequestToTypedData;
 
 function toBN(n) {
-    console.log(n);
     return new BN((new bignumber.BigNumber(n)).toString(10), 10);
 };
 
 function getEIP712Message(typedData) {
     const sanitizedData = sanitizeData(typedData);
     const parts = [Buffer.from("1901", "hex")];
-    console.log(sanitizedData.types);
     parts.push(hashStruct("EIP712Domain", sanitizedData.domain, sanitizedData.types));
-    console.log(parts);
     parts.push(hashStruct(sanitizedData.primaryType, sanitizedData.message, sanitizedData.types));
-    console.log(parts);
     return ethUtil.keccak(Buffer.concat(parts));
 }
 exports.getEIP712Message = getEIP712Message;

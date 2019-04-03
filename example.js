@@ -71,8 +71,8 @@ var cancelRequest = {
 	id:"0x" + "0".repeat(64),
 	owner:"0xb94065482ad64d4c2b9252358d746b39e820a582",
 	marketPair: {
-		baseToken: "0xef68e7c694f40c8202821edf525de3782458639f",
-        quoteToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+		baseToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        quoteToken: "0xef68e7c694f40c8202821edf525de3782458639f"
 	},
 	time: "0x5c4e980e"
 }
